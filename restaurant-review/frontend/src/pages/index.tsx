@@ -24,21 +24,23 @@ export default function Home() {
     const [title, setTitle] = useState("");
     const [rating, setRating] = useState(0);
     const [description, setDescription] = useState("");
+    const [location, setLocation] = useState("");
+    const [locationQuery, setLocationQuery] = useState("");
 
     useEffect(() => {
         const fetchAccounts = async () => {
-            await fetchReviews(REVIEW_PROGRAM_ID, connection).then(setReviews);
+            await fetchReviews(REVIEW_PROGRAM_ID, connection, locationQuery).then(setReviews);
         };
         fetchAccounts();
-    }, [connection]);
+    }, [connection, locationQuery]);
 
     const handleSubmit = () => {
-        const review = new Review(title, rating, description);
+        const review = new Review(title, rating, description, location);
         handleTransactionSubmit(review, 0);
     };
 
     const handleUpdate = () => {
-        const review = new Review(title, rating, description);
+        const review = new Review(title, rating, description, location);
         handleTransactionSubmit(review, 1);
     };
 
@@ -106,15 +108,28 @@ export default function Home() {
                     title={title}
                     description={description}
                     rating={rating}
+                    location={location}
                     setTitle={setTitle}
                     setDescription={setDescription}
                     setRating={setRating}
+                    setLocation={setLocation}
                     handleSubmit={handleSubmit}
                     handleUpdate={handleUpdate}
                 />
             </div>
 
             {txid && <div>{txid}</div>}
+
+            <label className="mb-4 flex w-full max-w-sm flex-col gap-2">
+                <span>Filter reviews by location</span>
+                <input
+                    className="rounded border px-3 py-2 text-gray-900"
+                    type="search"
+                    value={locationQuery}
+                    onChange={(event) => setLocationQuery(event.target.value)}
+                    placeholder="Search city or area"
+                />
+            </label>
 
             <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
                 {reviews &&

@@ -1,6 +1,6 @@
-# Rise In Solana Homeworks
+# Rise In Solana Projects
 
-Solutions for the Counter and Token Transfer projects in Rise In's Solana course.
+Solutions for the Counter, Token Transfer, Restaurant Review, and final project in Rise In's Solana course.
 
 ## Homework 1 — Counter updates
 
@@ -10,9 +10,9 @@ Solutions for the Counter and Token Transfer projects in Rise In's Solana course
 
 `homework-2-token-transfer` uses SPL Token `transfer_checked` to send a fixed 10,000 base units from the program-derived source account. The test funds the source with 15,000 and checks that the destination receives 10,000 while 5,000 remain at the source.
 
-## Restaurant Review project
+## Restaurant Review and final project
 
-`restaurant-review/` contains the Rust review program and a Next.js wallet frontend. The program stores user reviews in PDAs and supports add/update instructions. See its README for build and devnet setup.
+`restaurant-review/` contains the Rust review program and a Next.js wallet frontend. Reviews include title, rating, description, and location; the frontend can create/update reviews and filter them by location. See its README for setup, deploy, and devnet interaction instructions.
 
 ## Build and test
 

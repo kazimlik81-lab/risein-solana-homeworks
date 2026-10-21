@@ -35,12 +35,14 @@ pub fn process_instruction(
             title,
             rating,
             description,
-        } => add_review(program_id, accounts, title, rating, description),
+            location,
+        } => add_review(program_id, accounts, title, rating, description, location),
         ReviewInstruction::UpdateReview {
             title,
             rating,
             description,
-        } => update_review(program_id, accounts, title, rating, description),
+            location,
+        } => update_review(program_id, accounts, title, rating, description, location),
     }
 }
 
@@ -50,11 +52,13 @@ pub fn add_review(
     title: String,
     rating: u8,
     description: String,
+    location: String,
 ) -> ProgramResult {
     msg!("Adding  review...");
     msg!("Title: {}", title);
     msg!("Rating: {}", rating);
     msg!("Description: {}", description);
+    msg!("Location: {}", location);
 
     let account_info_iter = &mut accounts.iter();
 
@@ -83,8 +87,8 @@ pub fn add_review(
     let account_len = REVIEW_ACCOUNT_LEN;
 
     // Borsh stores each string length in four bytes, plus the initialized flag and rating.
-    if title.len() + description.len() + 10 > account_len {
-        return Err(ProgramError::InvalidInstructionData);
+    if title.len() + description.len() + location.len() + 14 > account_len {
+        return Err(ReviewError::ReviewTooLong.into());
     }
 
     let rent = Rent::get()?;
@@ -128,6 +132,7 @@ pub fn add_review(
     account_data.title = title;
     account_data.rating = rating;
     account_data.description = description;
+    account_data.location = location;
     account_data.is_initialized = true;
 
     msg!("serializing account");
@@ -140,9 +145,10 @@ pub fn add_review(
 pub fn update_review(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
-    _title: String,
+    title: String,
     rating: u8,
     description: String,
+    location: String,
 ) -> ProgramResult {
     msg!("Updating  review...");
 
@@ -187,18 +193,28 @@ pub fn update_review(
         return Err(ReviewError::InvalidRating.into());
     }
 
+    if title != account_data.title {
+        return Err(ProgramError::InvalidArgument);
+    }
+    if title.len() + description.len() + location.len() + 14 > REVIEW_ACCOUNT_LEN {
+        return Err(ReviewError::ReviewTooLong.into());
+    }
+
     msg!("Review before update:");
     msg!("Title: {}", account_data.title);
     msg!("Rating: {}", account_data.rating);
     msg!("Description: {}", account_data.description);
+    msg!("Location: {}", account_data.location);
 
     account_data.rating = rating;
     account_data.description = description;
+    account_data.location = location;
 
     msg!("Review after update:");
     msg!("Title: {}", account_data.title);
     msg!("Rating: {}", account_data.rating);
     msg!("Description: {}", account_data.description);
+    msg!("Location: {}", account_data.location);
 
     msg!("serializing account");
     account_data.serialize(&mut &mut pda_account.data.borrow_mut()[..])?;
