@@ -1,3 +1,7 @@
 [workspace]
-members = ["homework-1-counter", "homework-2-token-transfer"]
+members = [
+    "homework-1-counter",
+    "homework-2-token-transfer",
+    "restaurant-review/program",
+]
 resolver = "2"
