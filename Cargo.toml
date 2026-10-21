@@ -1,0 +1,3 @@
+[workspace]
+members = ["homework-1-counter", "homework-2-token-transfer"]
+resolver = "2"
